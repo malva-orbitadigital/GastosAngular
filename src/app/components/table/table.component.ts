@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, ViewChild, AfterViewInit, ElementRef, SimpleChanges, OnInit, afterRender, ChangeDetectorRef } from '@angular/core';
 import { CustomDataSourceComponent } from '../custom-data-source/custom-data-source.component';
 import { CommonModule } from '@angular/common';
 import { MatButton } from '@angular/material/button';
@@ -49,17 +49,17 @@ export class TableComponent<T> implements OnChanges, AfterViewInit {
   dataSource: CustomDataSourceComponent = new CustomDataSourceComponent(this.apiService);
   displayedColumns: Array<string> = [];
 
-  constructor(private apiService: ApiService){}
+  constructor(private apiService: ApiService, private cd: ChangeDetectorRef){ }
 
-  ngOnChanges(): void {
-    // ! ¿Se tiene que crear el CustomDataSourceComponent siempre que exista una modificacion en los 'inputs'?
+
+  ngOnChanges(changes: SimpleChanges): void {    
     this.dataSource = new CustomDataSourceComponent(this.apiService);
     this.displayedColumns = this.columns.map(column => column.columnDef);
-    this.dataSource.load(this.model);
-    // this.loadPage(); // TODO hacer con esta linea
+    // this.loadPage();
   }
 
   ngAfterViewInit(){
+    this.loadPage();
     fromEvent(this.input.nativeElement,'keyup')
       .pipe(
         debounceTime(150),
@@ -78,6 +78,8 @@ export class TableComponent<T> implements OnChanges, AfterViewInit {
         tap(() => this.loadPage())
       )
       .subscribe();
+
+    this.cd.detectChanges();
   }
 
   loadPage(){

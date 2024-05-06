@@ -60,7 +60,6 @@ export class ExpensesComponent{
         let message = data === true ? 'Modificado correctamente' : 'No se ha podido modificar';
 
         this.alertService.logError(message);
-        // TODO si se modifica correctamente. ¿Que habría que hacer? ¿Y si no se modifica correctamente (TODO futuro alertService - MatSnackBar)?
       })
     });
   }

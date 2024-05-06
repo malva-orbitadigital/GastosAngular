@@ -2,8 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map, shareReplay } from 'rxjs';
 
-// TODO: modify no funciona (Invalid action)
-
 const apiUrl = "http://localhost/ContabilidadAngular/api/apiService.php?";//cors=1&"
 
 @Injectable({
