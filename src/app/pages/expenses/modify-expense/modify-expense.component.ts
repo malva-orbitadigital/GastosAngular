@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { DialogData } from '../expenses.component';
+import { Expense } from '../../../models/expense.model';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -32,7 +32,7 @@ import {
 export class ModifyExpenseComponent {
   constructor(
     public dialogRef: MatDialogRef<ModifyExpenseComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(MAT_DIALOG_DATA) public data: Expense,
   ) {}
 
   onNoClick(): void {

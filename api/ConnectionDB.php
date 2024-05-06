@@ -49,8 +49,8 @@ class ConnectionDB{
             $query .= " ORDER BY $orderBy "; 
             $orderHow === 'desc' ? $query .= "DESC" : $query .= "ASC";
         }
-        if ($offset > 0|| $page > 0){
-            $limit = $page == 1 ? 0 : $offset * ($page - 1);
+        if ($offset > 0 || $page > 0){
+            $limit = $offset * $page;
             $query .= " LIMIT $limit, $offset ";
         } 
         // return $query;

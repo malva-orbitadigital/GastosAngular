@@ -1,6 +1,7 @@
 export interface Expense {
-    date: string;
-    description: string;
-    quantity: number;
-    category: string;
-  }
+  id: string;
+  date: string;
+  description: string;
+  quantity: number;
+  category: string;
+}

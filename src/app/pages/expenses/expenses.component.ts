@@ -8,14 +8,6 @@ import {
   MatDialog,
 } from '@angular/material/dialog';
 
-export interface DialogData {
-  id: string
-  date: string;
-  description: string;
-  quantity: number;
-  category: string;
-}
-
 
 @Component({
   selector: 'app-expenses',
@@ -51,15 +43,20 @@ export class ExpensesComponent{
     })
   }
 
-  openDialog($e:any){
+  openDialog($e:Expense){
     const dialogRef = this.dialog.open(ModifyExpenseComponent, {
-      data: {id:$e.id, date: $e.fecha, description: $e.descripcion, quantity: $e.importe, category: $e.categoria},
+      data: $e,
     });
-    //TODO
     dialogRef.afterClosed().subscribe(result => {
       console.log(result)
+
+      if (typeof result == "undefined") {
+        return;
+      }
+      
       this.apiService.updateExpense(result).subscribe(data => {
         console.log(data)
+        // TODO si se modifica correctamente. ¿Que habría que hacer? ¿Y si no se modifica correctamente (TODO futuro alertService - MatSnackBar)?
       })
     });
   }

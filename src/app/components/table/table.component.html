@@ -7,6 +7,8 @@
   <mat-spinner></mat-spinner>
 </div>
 
+
+<!-- TODO table responsive (Detectar alto y obtener el numero de filas maximas que puede tener) -->
 <mat-table 
   matSort
   matSortActive="Date" 
@@ -73,4 +75,5 @@
 
 </mat-table>
 
-<mat-paginator [length]="numRows" [pageSize]="3" [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
+<!-- TODO ¿Porque me cargan 3 elementos cuando se inicializa a 1?? -->
+<mat-paginator [length]="numRows" [pageSize]="1" [pageSizeOptions]="[1, 2, 3]"></mat-paginator>

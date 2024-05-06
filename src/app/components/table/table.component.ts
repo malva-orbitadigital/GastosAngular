@@ -52,9 +52,11 @@ export class TableComponent<T> implements OnChanges, AfterViewInit {
   constructor(private apiService: ApiService){}
 
   ngOnChanges(): void {
+    // ! ¿Se tiene que crear el CustomDataSourceComponent siempre que exista una modificacion en los 'inputs'?
     this.dataSource = new CustomDataSourceComponent(this.apiService);
     this.displayedColumns = this.columns.map(column => column.columnDef);
     this.dataSource.load(this.model);
+    // this.loadPage(); // TODO hacer con esta linea
   }
 
   ngAfterViewInit(){

@@ -11,6 +11,9 @@ import { BehaviorSubject, Observable, catchError, finalize, of } from 'rxjs';
   styleUrl: './custom-data-source.component.css'
 })
 export class CustomDataSourceComponent implements DataSource<any> {
+  private pages = new Set<number>(); // TODO intentarlo mas adelante con una "lista"
+  // if (this.pages.has(page)) return;
+  // this.pages.add(page);
 
   private objectSubject = new BehaviorSubject<any[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
@@ -35,6 +38,8 @@ export class CustomDataSourceComponent implements DataSource<any> {
     .subscribe(data => {
       this.objectSubject.next(data);
       console.log(data)
+
+      // TODO data: [data: T; total_register: number;] = [data: [], total_register: 0]
     })
   }
 }

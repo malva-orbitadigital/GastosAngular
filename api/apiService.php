@@ -22,9 +22,9 @@ switch ($action) {
         $where = $_GET['where'] ?? $_POST['where'] ?? 0;
         $orderBy = $_GET['orderBy'] ?? $_POST['orderBy'] ?? 0;
         $orderHow = $_GET['orderHow'] ?? $_POST['orderHow'] ?? 0;
-        $limit = (int) ($_GET['limit'] ?? $_POST['limit'] ?? 0);
+        $offset = (int) ($_GET['offset'] ?? $_POST['offset'] ?? 0);
         $page = (int) ($_GET['page'] ?? $_POST['page'] ?? 0);
-        $response = ConnectionDB::select($select, $model, $join, $where, $orderBy, $orderHow, $limit, $page);
+        $response = ConnectionDB::select($select, $model, $join, $where, $orderBy, $orderHow, $offset, $page);
         break;
     case 'getOne':
         $id = (int) ($_GET['id'] ?? $_POST['id'] ?? 0);
@@ -54,7 +54,7 @@ switch ($action) {
         break;
     case 'update':
         if ($model === 'expenses') {
-            $where = $_POST['where'] ?? $_GET['where'] ?? 0;
+            $where = $_POST['where'] ?? $_GET['where'] ?? '';
             $date = $_GET['date'] ?? $_POST['date'] ?? '';
             $quantity = $_GET['quantity'] ?? $_POST['quantity'] ?? '';
             $description = $_GET['description'] ?? $_POST['description'] ?? '';
