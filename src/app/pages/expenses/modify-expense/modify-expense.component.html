@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Editar anotación</h2>
+<mat-dialog-content>
+
+  <mat-form-field>
+    <mat-label>Fecha</mat-label>
+    <input type="date" matInput [(ngModel)]="data.date">
+  </mat-form-field>
+  
+  <mat-form-field>
+    <mat-label>Importe</mat-label>
+    <input type="number" matInput [(ngModel)]="data.quantity">
+  </mat-form-field>
+  
+  <mat-form-field>
+    <mat-label>Descripción</mat-label>
+    <textarea matInput [(ngModel)]="data.description"></textarea>
+  </mat-form-field>
+  
+  <mat-form-field>
+    <mat-label>Categoría</mat-label>
+    <input matInput [(ngModel)]="data.category">
+  </mat-form-field>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Aceptar</button>
+</mat-dialog-actions>

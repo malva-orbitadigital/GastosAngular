@@ -1,0 +1,5 @@
+<h1>Gastos</h1>
+<app-table [data]="expenses" [columns]="columns" [actions]="actions" model="expenses" [numRows]="totalRows"
+    (delete)="delete($event)" (modify)="openDialog($event)"
+/>
+<app-total [total]="total"/>

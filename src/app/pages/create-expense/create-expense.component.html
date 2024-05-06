@@ -1,0 +1,45 @@
+<div>
+    <form [formGroup]="createForm" (ngSubmit)="onSubmit()">
+        <h2>Nueva anotación</h2>
+        <mat-form-field>
+            <mat-label>Fecha</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="date">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        
+        <mat-form-field>
+            <mat-label>Importe</mat-label>
+            <input matInput type="number" formControlName="quantity">
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Descripción</mat-label>
+            <textarea matInput formControlName="description"></textarea>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Categorías</mat-label>
+            <input type="text"
+                placeholder="Pick one"
+                aria-label="Number"
+                matInput
+                [formControl]="myControl"
+                [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete">
+            @for (option of filteredOptions | async; track option) {
+                <mat-option [value]="option">{{option}}</mat-option>
+            }
+            </mat-autocomplete>
+            <!-- <mat-select formControlName="category">
+                <mat-option>Selecciona...</mat-option>
+                <ng-container *ngFor="let category of categories">
+                    <mat-option value="{{category.id}}">{{category.nombre}}</mat-option>
+                </ng-container>
+            </mat-select> -->
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">Crear</button>
+    </form>
+</div>
