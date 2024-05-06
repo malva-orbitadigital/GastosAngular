@@ -5,14 +5,11 @@ import { Observable, map, shareReplay } from 'rxjs';
 // TODO: modify no funciona (Invalid action)
 
 const apiUrl = "http://localhost/ContabilidadAngular/api/apiService.php?";//cors=1&"
-const CACHE_SIZE = 1;
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-
-  private cache$!: Observable<any[]>;
 
   constructor(private http: HttpClient) { }
 
@@ -34,7 +31,7 @@ export class ApiService {
     return this.http.get<number>(apiUrl+'action=getNum&model='+model);
   }
 
-  updateExpense(expense: any): Observable<string> {
+  updateExpense(expense: any): Observable<any> {
     return this.http.get<string>(apiUrl+'action=update&model=expenses&where=id='+expense.id+'&date='+expense.date+
     '&description='+expense.description+'&quantity='+expense.quantity+'&category='+expense.category);
   }

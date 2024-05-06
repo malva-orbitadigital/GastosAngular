@@ -7,6 +7,7 @@ import { ModifyExpenseComponent } from './modify-expense/modify-expense.componen
 import {
   MatDialog,
 } from '@angular/material/dialog';
+import { AlertService } from '../../services/alert.service';
 
 
 @Component({
@@ -22,7 +23,7 @@ export class ExpensesComponent{
   total: number = 0;
   totalRows: number = 0;
 
-  constructor(private apiService: ApiService, public dialog: MatDialog) {
+  constructor(private apiService: ApiService, public dialog: MatDialog, public alertService: AlertService) {
     this.apiService.getTotalExpenses().subscribe(data => {
       this.total = data;
     })
@@ -56,6 +57,9 @@ export class ExpensesComponent{
       
       this.apiService.updateExpense(result).subscribe(data => {
         console.log(data)
+        let message = data === true ? 'Modificado correctamente' : 'No se ha podido modificar';
+
+        this.alertService.logError(message);
         // TODO si se modifica correctamente. ¿Que habría que hacer? ¿Y si no se modifica correctamente (TODO futuro alertService - MatSnackBar)?
       })
     });

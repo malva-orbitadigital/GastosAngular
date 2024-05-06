@@ -62,8 +62,8 @@ switch ($action) {
             $response = ConnectionDB::update($model, 
             ['date'=>$date,'quantity'=>$quantity,'description'=>$description,'category'=>$category], $where);
         } elseif ($model === 'categories') {
-            $where = $_POST['where'] ?? $_GET['where'] ?? 0;
-            $name = $_POST['name'] ?? $_GET['name'] ?? 0;
+            $where = $_POST['where'] ?? $_GET['where'] ?? '';
+            $name = $_POST['name'] ?? $_GET['name'] ?? '';
             $description = $_GET['description'] ?? $_POST['description'] ?? '';
             $response = ConnectionDB::update($model, 
             ['name'=>$name,'description'=>$description], $where);
