@@ -1,0 +1,76 @@
+
+<mat-form-field>
+  <input matInput placeholder="Buscar por descripción" #input>
+</mat-form-field>
+
+<div class="spinner-container" *ngIf="dataSource.loading$ | async">
+  <mat-spinner></mat-spinner>
+</div>
+
+<mat-table 
+  matSort
+  matSortActive="Fecha" 
+  matSortDirection="desc" 
+  
+  [dataSource]="dataSource" 
+  class="mat-elevation-z8">
+
+  <ng-container 
+    *ngFor="let disCol of columns let colIndex = index;" 
+    matColumnDef="{{disCol.columnDef}}">
+    
+    <ng-container *ngIf="disCol.columnDef != 'actions'">
+      <mat-header-cell 
+        *matHeaderCellDef
+        mat-sort-header
+      >
+        {{ disCol.header }}
+      </mat-header-cell>
+    </ng-container>
+
+    <ng-container *ngIf="disCol.columnDef == 'actions'">
+      <mat-header-cell 
+        *matHeaderCellDef
+      >
+        {{ disCol.header }}
+      </mat-header-cell>
+    </ng-container>
+    
+
+    <!-- *ngIf -->
+    <ng-container *ngIf="disCol.columnDef != 'actions'">
+      <mat-cell 
+        *matCellDef="let element">
+          {{ disCol.cell(element) | titlecase }} 
+      </mat-cell>
+    </ng-container>
+
+
+    <ng-container *ngIf="disCol.columnDef == 'actions'">
+      <mat-cell 
+        *matCellDef="let element">
+        <ng-container *ngFor="let action of actions">
+          <ng-container >
+            <button mat-stroked-button color="{{action.color}}" (click)="onDelete(element)" *ngIf="action.columnDef == 'delete'">
+              {{action.name}}
+            </button>
+            <button mat-stroked-button color="{{action.color}}" (click)="onModify(element)" *ngIf="action.columnDef == 'modify'" >
+              {{action.name}}
+            </button>
+          </ng-container>
+        </ng-container>
+      </mat-cell>
+    </ng-container>
+  </ng-container>
+
+  <mat-header-row 
+    *matHeaderRowDef="displayedColumns">
+  </mat-header-row>
+
+  <mat-row 
+    *matRowDef="let row; columns: displayedColumns;">
+  </mat-row>
+
+</mat-table>
+
+<mat-paginator [length]="numRows" [pageSize]="3" [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
