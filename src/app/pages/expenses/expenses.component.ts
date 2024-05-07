@@ -35,7 +35,6 @@ export class ExpensesComponent{
     })
   }
 
-
   delete($event:number){
     this.apiService.delete('expenses', $event).subscribe(data => {
       this.apiService.get('expenses','','',0,0).subscribe(data => {

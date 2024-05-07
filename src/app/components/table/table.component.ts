@@ -9,6 +9,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { debounceTime, distinctUntilChanged, fromEvent, merge, tap } from 'rxjs';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
+import { HostListener } from '@angular/core';
 
 export interface Column {
   columnDef: string;
@@ -32,24 +33,34 @@ export interface Action {
   templateUrl: './table.component.html',
   styleUrl: './table.component.css'
 })
-export class TableComponent<T> implements OnChanges, AfterViewInit {
+export class TableComponent<T> implements OnChanges, AfterViewInit, OnInit {
   @Input() data: Array<T> = [];
   @Input() columns: Array<Column> = []; 
   @Input() actions?: Array<Action>;
   @Input() model: string = '';
   @Input() numRows: number = 0;
-
+  
   @Output() delete = new EventEmitter<number>();
   @Output() modify = new EventEmitter<any>();
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('input') input!: ElementRef;
-
+  
   dataSource: CustomDataSourceComponent = new CustomDataSourceComponent(this.apiService);
   displayedColumns: Array<string> = [];
-
+  screenHeight: number = 0;
+  
   constructor(private apiService: ApiService, private cd: ChangeDetectorRef){ }
+
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    this.screenHeight = window.innerHeight;
+  }
+
+  ngOnInit(): void {
+    this.screenHeight = window.innerHeight;
+  }
 
 
   ngOnChanges(changes: SimpleChanges): void {    
