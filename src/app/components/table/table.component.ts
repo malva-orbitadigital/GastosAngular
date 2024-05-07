@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, ViewChild, AfterViewInit, ElementRef, SimpleChanges, OnInit, afterRender, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, ViewChild, AfterViewInit, ElementRef, SimpleChanges, OnInit, afterRender, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CustomDataSourceComponent } from '../custom-data-source/custom-data-source.component';
 import { CommonModule } from '@angular/common';
 import { MatButton } from '@angular/material/button';
@@ -6,10 +6,9 @@ import { MatTableModule } from '@angular/material/table';
 import { ApiService } from '../../services/api.service';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatPaginator } from '@angular/material/paginator';
-import { debounceTime, distinctUntilChanged, fromEvent, merge, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, fromEvent, merge, min, tap } from 'rxjs';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
-import { HostListener } from '@angular/core';
 
 export interface Column {
   columnDef: string;
@@ -22,6 +21,9 @@ export interface Action {
   name: string;
   color: string;
 }
+
+const CELL_SCREEN_SIZE = 50;
+
 
 @Component({
   selector: 'app-table',
@@ -50,23 +52,27 @@ export class TableComponent<T> implements OnChanges, AfterViewInit, OnInit {
   dataSource: CustomDataSourceComponent = new CustomDataSourceComponent(this.apiService);
   displayedColumns: Array<string> = [];
   screenHeight: number = 0;
+  heightTable: number = 0;
+
   
   constructor(private apiService: ApiService, private cd: ChangeDetectorRef){ }
-
-  @HostListener('window:resize', ['$event'])
-  onWindowResize() {
-    this.screenHeight = window.innerHeight;
-  }
-
-  ngOnInit(): void {
-    this.screenHeight = window.innerHeight;
-  }
 
 
   ngOnChanges(changes: SimpleChanges): void {    
     this.dataSource = new CustomDataSourceComponent(this.apiService);
     this.displayedColumns = this.columns.map(column => column.columnDef);
     // this.loadPage();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    this.screenHeight = window.innerHeight;
+    this.calculateHeight();
+  }
+
+  ngOnInit(): void {
+    this.screenHeight = window.innerHeight;
+    this.calculateHeight();
   }
 
   ngAfterViewInit(){
@@ -90,7 +96,22 @@ export class TableComponent<T> implements OnChanges, AfterViewInit, OnInit {
       )
       .subscribe();
 
+    this.calculateHeight();
     this.cd.detectChanges();
+  }
+
+  calculateHeight(){
+    console.log(this.dataSource.numberRows)
+    let minHeight = this.dataSource.numberRows * CELL_SCREEN_SIZE + 50;
+    // this.heightTable = minHeight > this.screenHeight ? this.screenHeight : minHeight;
+    // if (this.screenHeight > minHeight) {
+    //   this.heightTable = this.screenHeight;
+    // } else {
+    //   this.heightTable = minHeight;
+    // }
+    this.heightTable = minHeight;
+    
+    console.log(this.heightTable)
   }
 
   loadPage(){

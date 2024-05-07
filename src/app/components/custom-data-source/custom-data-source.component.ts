@@ -1,14 +1,8 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { Component } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { BehaviorSubject, Observable, catchError, finalize, of } from 'rxjs';
 
-interface Parameters {
-  model: string;
-  filter: string;
-  sortDirection: string;
-  offset: number;
-}
 
 @Component({
   selector: 'app-custom-data-source',
@@ -18,18 +12,18 @@ interface Parameters {
   styleUrl: './custom-data-source.component.css'
 })
 export class CustomDataSourceComponent implements DataSource<any> {
-  // TODO intentarlo mas adelante con una "lista"
-
   private objectSubject = new BehaviorSubject<any[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
+  
+  public numberRows: number = 0;
 
   private pages = new Map<number, {model: string, filter: string, sortDirection: string, offset: number}>();
   private dataPages = new Map<number, any[]>()
-
-
+  
+  
   constructor(private apiService: ApiService) { }
-
+ 
   connect(collectionViewer: CollectionViewer): Observable<readonly any[]> {
     return this.objectSubject.asObservable();
   }
@@ -43,7 +37,7 @@ export class CustomDataSourceComponent implements DataSource<any> {
       let savedPage = this.pages.get(page)!;
       if (model === savedPage.model && filter === savedPage.filter && sortDirection === savedPage.sortDirection && offset === savedPage.offset) {
         this.objectSubject.next(this.dataPages.get(page)!);
-        console.log("pzsidjc")
+        this.numberRows = this.dataPages.get(page)!.length;
         return;
       } else {
         this.pages.delete(page);
@@ -57,6 +51,8 @@ export class CustomDataSourceComponent implements DataSource<any> {
     finalize(() => this.loadingSubject.next(false)))
     .subscribe(data => {
       this.objectSubject.next(data);
+      this.numberRows = data.length;
+
       console.log(data)
 
       this.dataPages.set(page, data);
