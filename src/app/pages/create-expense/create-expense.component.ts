@@ -39,7 +39,7 @@ export class CreateExpenseComponent implements OnInit{
       quantity: ['quantity', [Validators.required, Validators.min(1)]],
       category: ['category', [Validators.required]],
     });
-    this.apiService.get('categories', '','',0,0).subscribe(data => {
+    this.apiService.get('categories', '','','',0,0).subscribe(data => {
       this.options = data
       console.log(data)
     })

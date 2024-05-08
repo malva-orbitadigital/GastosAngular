@@ -13,6 +13,8 @@ import {
   MatDialogClose,
 } from '@angular/material/dialog';
 
+//TODO: categories
+
 @Component({
   selector: 'app-modify-expense',
   standalone: true,

@@ -19,27 +19,18 @@ import { AlertService } from '../../services/alert.service';
 })
 export class ExpensesComponent{
 
-  expenses: any[] = [];
   total: number = 0;
-  totalRows: number = 0;
 
   constructor(private apiService: ApiService, public dialog: MatDialog, public alertService: AlertService) {
     this.apiService.getTotalExpenses().subscribe(data => {
-      this.total = data;
-    })
-    this.apiService.get('expenses','','',0,0).subscribe(data => {
-      this.expenses = data;
-    })
-    this.apiService.getNum('expenses').subscribe(data => {
-      this.totalRows = data;
+      this.total = data; 
     })
   }
 
   delete($event:number){
     this.apiService.delete('expenses', $event).subscribe(data => {
-      this.apiService.get('expenses','','',0,0).subscribe(data => {
-        this.expenses = data;
-      })
+      console.log(data)
+      //TODO: alertService
     })
   }
 

@@ -13,7 +13,6 @@
   matSort
   matSortActive="Date" 
   matSortDirection="desc" 
-  [ngStyle]="{'height': heightTable+'px'}"
   
   [dataSource]="dataSource" 
   class="mat-elevation-z8">
@@ -76,4 +75,4 @@
 
 </mat-table>
 
-<mat-paginator [length]="numRows" [pageSize]="2" [pageSizeOptions]="[1, 2, 3, 10]"></mat-paginator>
+<mat-paginator [length]="dataSource.numRows" [pageSize]="initRows" [pageSizeOptions]="[1, 2, 3, 10]"></mat-paginator>

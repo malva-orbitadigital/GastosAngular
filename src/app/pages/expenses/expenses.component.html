@@ -1,5 +1,8 @@
 <h1>Gastos</h1>
-<app-table [data]="expenses" [columns]="columns" [actions]="actions" model="expenses" [numRows]="totalRows"
-    (delete)="delete($event)" (modify)="openDialog($event)"
+
+<!-- TODO pasarle el titulo a la tabla y asignarlo en la misma linea con el filtro  -->
+<app-table [columns]="columns" [actions]="actions" model="expenses"
+(delete)="delete($event)" (modify)="openDialog($event)"
 />
+<!-- TODO pasarle el total (precio total) a la tabla-->
 <app-total [total]="total"/>

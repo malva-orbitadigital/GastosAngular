@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-// import { Data } from '../components/custom-data-source/custom-data-source.component';
-import { Observable, map, shareReplay } from 'rxjs';
+import { Observable, forkJoin, map, shareReplay } from 'rxjs';
 
 const apiUrl = "http://localhost/ContabilidadAngular/api/apiService.php?";//cors=1&"
 
@@ -12,23 +11,16 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  // getData(model: string, filter: string, sortDirection: string, page: number, offset: number): Observable<Data<any>> {
-  //   let numRegister = 0;
-  //   this.getNum(model).subscribe(value => numRegister = value).unsubscribe;
-  //   let data: any[] = [];
-  //   this.get(model, filter, sortDirection, page, offset).subscribe(values => data = values).unsubscribe;
-  //   console.log(data)
-  //   let fullData: Data<any> = {
-  //     data: data,
-  //     totalRegister: numRegister
-  //   };
-  //   return new Observable(observer => observer.next(fullData));
-  // }
+  getData(model: string, filter: string, sortField: string, sortDirection: string, page: number, offset: number): Observable<[number, any[]]> {
+    const firstCall = this.getNum(model);
+    const secondCall = this.get(model, filter, sortField, sortDirection, page, offset);
+    return forkJoin([firstCall, secondCall])
+  }
 
-  get(model: string, filter: string, sortDirection: string, page: number, offset: number): Observable<any[]> {
+  get(model: string, filter: string, sortField: string, sortDirection: string, page: number, offset: number): Observable<any[]> {
     let where = (filter !== '') ? "&where=description LIKE '%"+filter+"%'" : '';
     return this.http.get<any[]>(apiUrl+'action=get&model='+model+where
-    +'&orderHow='+sortDirection+'&page='+page+'&offset='+offset);
+    +'&orderBy='+sortField+'&orderHow='+sortDirection+'&page='+page+'&offset='+offset);
   }
 
   getNum(model: string): Observable<number> {

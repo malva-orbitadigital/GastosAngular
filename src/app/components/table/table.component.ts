@@ -9,6 +9,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { debounceTime, distinctUntilChanged, fromEvent, merge, min, tap } from 'rxjs';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+
 
 export interface Column {
   columnDef: string;
@@ -22,7 +25,7 @@ export interface Action {
   color: string;
 }
 
-const CELL_SCREEN_SIZE = 50;
+const CELL_SIZE = 50;
 
 
 @Component({
@@ -35,12 +38,10 @@ const CELL_SCREEN_SIZE = 50;
   templateUrl: './table.component.html',
   styleUrl: './table.component.css'
 })
-export class TableComponent<T> implements OnChanges, AfterViewInit, OnInit {
-  @Input() data: Array<T> = [];
+export class TableComponent<T> implements OnChanges, AfterViewInit {
   @Input() columns: Array<Column> = []; 
   @Input() actions?: Array<Action>;
   @Input() model: string = '';
-  @Input() numRows: number = 0;
   
   @Output() delete = new EventEmitter<number>();
   @Output() modify = new EventEmitter<any>();
@@ -52,31 +53,24 @@ export class TableComponent<T> implements OnChanges, AfterViewInit, OnInit {
   dataSource: CustomDataSourceComponent = new CustomDataSourceComponent(this.apiService);
   displayedColumns: Array<string> = [];
   screenHeight: number = 0;
-  heightTable: number = 0;
-
+  initRows: number = 0;
   
-  constructor(private apiService: ApiService, private cd: ChangeDetectorRef){ }
-
-
+  constructor(private apiService: ApiService, private cd: ChangeDetectorRef, @Inject(PLATFORM_ID) private platformId: Object){
+    if (isPlatformBrowser(this.platformId)) {
+      this.screenHeight = window.innerHeight;
+    }
+  }
+  
+  
   ngOnChanges(changes: SimpleChanges): void {    
     this.dataSource = new CustomDataSourceComponent(this.apiService);
     this.displayedColumns = this.columns.map(column => column.columnDef);
-    // this.loadPage();
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onWindowResize() {
-    this.screenHeight = window.innerHeight;
-    this.calculateHeight();
-  }
-
-  ngOnInit(): void {
-    this.screenHeight = window.innerHeight;
-    this.calculateHeight();
+    
+    this.initRows = Math.floor((this.screenHeight-300) / CELL_SIZE);
+    this.loadPage();
   }
 
   ngAfterViewInit(){
-    this.loadPage();
     fromEvent(this.input.nativeElement,'keyup')
       .pipe(
         debounceTime(150),
@@ -95,32 +89,37 @@ export class TableComponent<T> implements OnChanges, AfterViewInit, OnInit {
         tap(() => this.loadPage())
       )
       .subscribe();
-
-    this.calculateHeight();
-    this.cd.detectChanges();
   }
 
-  calculateHeight(){
-    console.log(this.dataSource.numberRows)
-    let minHeight = this.dataSource.numberRows * CELL_SCREEN_SIZE + 50;
-    // this.heightTable = minHeight > this.screenHeight ? this.screenHeight : minHeight;
-    // if (this.screenHeight > minHeight) {
-    //   this.heightTable = this.screenHeight;
-    // } else {
-    //   this.heightTable = minHeight;
-    // }
-    this.heightTable = minHeight;
-    
-    console.log(this.heightTable)
-  }
 
   loadPage(){
+    var filter = '';
+    var pageIndex = 0;
+    var sortField = 'id';
+    var pageSize = this.initRows;
+    var direction = 'DESC';
+    
+    if(typeof this.input != 'undefined'){
+      filter = this.input.nativeElement.value;
+    }
+    
+    if(typeof this.paginator != 'undefined'){
+      pageIndex = this.paginator.pageIndex;
+      pageSize = this.paginator.pageSize;
+    }
+    
+    if(typeof this.sort != 'undefined'){
+      direction = this.sort.direction;
+      sortField = this.sort.active;
+    }
+
     this.dataSource.load(
       this.model,
-      this.input.nativeElement.value,
-      this.sort.direction,
-      this.paginator.pageIndex,
-      this.paginator.pageSize
+      filter,
+      sortField,
+      direction,
+      pageIndex,
+      pageSize
     )
   }
 

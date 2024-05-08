@@ -12,17 +12,8 @@ import { ApiService } from '../../services/api.service';
 })
 export class CategoriesComponent {
 
-  categories: any[] = [];
-  totalRows: number = 0;
 
-  constructor(private apiService: ApiService) {
-    this.apiService.get('categories', '','',0,0).subscribe(data => {
-      this.categories = data;
-    })
-    this.apiService.getNum('categories').subscribe(data => {
-      this.totalRows = data;
-    })
-  }
+  constructor(private apiService: ApiService) { }
 
   columns: Array<Column> = [
     {

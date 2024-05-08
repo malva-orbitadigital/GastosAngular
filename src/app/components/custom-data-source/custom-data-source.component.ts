@@ -3,7 +3,6 @@ import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { BehaviorSubject, Observable, catchError, finalize, of } from 'rxjs';
 
-
 @Component({
   selector: 'app-custom-data-source',
   standalone: true,
@@ -16,7 +15,7 @@ export class CustomDataSourceComponent implements DataSource<any> {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
   
-  public numberRows: number = 0;
+  public numRows: number = 0;
 
   private pages = new Map<number, {model: string, filter: string, sortDirection: string, offset: number}>();
   private dataPages = new Map<number, any[]>()
@@ -32,30 +31,29 @@ export class CustomDataSourceComponent implements DataSource<any> {
     this.loadingSubject.complete();
   }
 
-  load(model: string, filter = '', sortDirection = 'asc', page = 0, offset = 3){
+  load(model: string, filter = '', sortField = 'id', sortDirection = 'asc', page = 0, offset = 3){
     if (this.pages.has(page)) {
       let savedPage = this.pages.get(page)!;
       if (model === savedPage.model && filter === savedPage.filter && sortDirection === savedPage.sortDirection && offset === savedPage.offset) {
         this.objectSubject.next(this.dataPages.get(page)!);
-        this.numberRows = this.dataPages.get(page)!.length;
         return;
-      } else {
-        this.pages.delete(page);
-        this.dataPages.delete(page);
-      }      
+      }
+
+      this.pages.delete(page);
+      this.dataPages.delete(page);
     }
     
     this.loadingSubject.next(true);
-    this.apiService.get(model, filter, sortDirection, page, offset)
+    this.apiService.getData(model, filter, sortField, sortDirection, page, offset)
     .pipe(catchError(() => of([])), 
     finalize(() => this.loadingSubject.next(false)))
     .subscribe(data => {
-      this.objectSubject.next(data);
-      this.numberRows = data.length;
+      this.objectSubject.next(data[1]);
+      this.numRows = data[0];
 
-      console.log(data)
+      console.log(data[0])
 
-      this.dataPages.set(page, data);
+      this.dataPages.set(page, data[1]);
       this.pages.set(page, {model, filter, sortDirection, offset});
 
       // TODO data: [data: T; total_register: number;] = [data: [], total_register: 0]
